@@ -8,6 +8,11 @@ HOST = "127.0.0.1"
 
 PUERTO= 5000
 
+def procesar(texto): 
+    print("Procesando en:", threading.current_thread().name)
+    return texto.upper()
+    
+
 def correr_cliente(conexion, direccion_cliente):
     print("Se conecto correctamente", direccion_cliente)
     while True:                                  
@@ -16,11 +21,11 @@ def correr_cliente(conexion, direccion_cliente):
             break
         texto = datos.decode("utf-8")
         print("Recibí:", texto)
-        textoMayus= texto.upper()
-        conexion.sendall(textoMayus.encode("utf-8"))
+        future = pool.submit(procesar, texto) 
+        resultado = future.result()             
+        conexion.sendall(resultado.encode("utf-8"))
     conexion.close()
     print("Se desconectó", direccion_cliente)
- 
 
 
 servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -33,4 +38,11 @@ pool = ThreadPoolExecutor(max_workers=4)
 
 while True:
     conexion, direccion_cliente = servidor.accept()
-    pool.submit(correr_cliente, conexion, direccion_cliente)
+    threading.Thread(
+        target=correr_cliente,
+        args=(conexion, direccion_cliente),
+        daemon=True,
+    ).start()
+
+
+   

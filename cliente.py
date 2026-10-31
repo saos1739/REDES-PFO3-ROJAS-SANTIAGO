@@ -9,7 +9,12 @@ PUERTO= 5000
 
 
 cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-cliente.connect((HOST, PUERTO)) 
+
+try:
+    cliente.connect((HOST, PUERTO))
+except ConnectionRefusedError:
+    print("Revisa si el servidor esta prendido")
+    exit()
 
 while True:
     mensaje = input("Mensaje (vacío para salir): ")
