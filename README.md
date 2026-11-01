@@ -24,11 +24,6 @@
 
        py cliente.py
 
-
-2. Abrir otra terminal (o varias, para probar varios clientes) y ejecutar:
-
-       py cliente.py
-
 3. Escribir un mensaje y presionar Enter. Un mensaje vacío cierra el cliente.
 
 ## Requisitos
